@@ -917,6 +917,15 @@ class MicrophoneGateTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(appended, [])
         self.assertEqual(session._held_frames, 4)
 
+    async def test_held_audio_is_not_counted_as_something_to_commit(self):
+        """_appended_audio must stay False when every frame is held, or a
+        manual-mode toggle-off commits an empty buffer. The flag sits below
+        the echo gate in _mic_loop for exactly this reason; nothing asserts
+        the ordering."""
+        session, appended, _ = await self.run_mic([self.FRAME] * 2, speaking=5.0)
+        self.assertEqual(appended, [])
+        self.assertFalse(session._appended_audio)
+
     async def test_a_quiet_room_is_sent_normally(self):
         """The gate must not be a mute button: with nothing playing, every
         frame goes."""

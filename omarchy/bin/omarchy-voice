@@ -19,4 +19,10 @@ set -euo pipefail
 SRC="${OMARCHY_VOICE_SRC:-$HOME/.local/share/omarchy-voice/src}"
 [[ -d $SRC ]] && export PYTHONPATH="$SRC${PYTHONPATH:+:$PYTHONPATH}"
 
-exec python3 -m omarchy_voice status "$@"
+# Pass arguments through so `omarchy-voice <subcommand>` reaches the CLI.
+# A bare call (no args) remains the status route for `omarchy voice`.
+if [[ $# -eq 0 ]]; then
+  exec python3 -m omarchy_voice status
+fi
+
+exec python3 -m omarchy_voice "$@"
