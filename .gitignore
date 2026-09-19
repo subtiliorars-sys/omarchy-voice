@@ -39,3 +39,4 @@ docs/omarchy-voice.html
 build/
 dist/
 *.egg-info/
+uv.lock
